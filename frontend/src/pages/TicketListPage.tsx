@@ -57,6 +57,7 @@ export default function TicketListPage() {
       {items.map(t => (
         <div className="card" key={t.id}>
           <div className="row">
+            <p>conflits de branch priority</p>
             <strong>{t.title}</strong>
             <span className="badge">{t.status}</span>
             <span className="badge">{t.priority}</span>
