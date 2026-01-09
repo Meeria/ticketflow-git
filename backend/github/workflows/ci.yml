@@ -1,62 +1,65 @@
 name: CI
 on:
-push:
-branches: ["**"]
-pull_request:
-permissions:
-contents: read
-concurrency:
-group: ci-${{ github.ref }}
-cancel-in-progress: true
-jobs:
-backend:
-name: Backend (Maven)
-runs-on: ubuntu-latest
-defaults:
-run:
-working-directory: backend
-steps:
-- name: Checkout
-uses: actions/checkout@v4
-- name: Setup Java
-uses: actions/setup-java@v4
-with:
-distribution: temurin
-java-version: "21"
-cache: maven
-- name: Test
-run: mvn -B -ntp test
+  push:
+    branches: ["**"]
+  pull_request:
 
-- name: Package
-run: mvn -B -ntp -DskipTests package
-- name: Upload backend jar
-uses: actions/upload-artifact@v4
-with:
-name: ticketflow-backend-jar
-path: backend/target/*.jar
-frontend:
-name: Frontend (Node/Vitest)
-runs-on: ubuntu-latest
-defaults:
-run:
-working-directory: frontend
-steps:
-- name: Checkout
-uses: actions/checkout@v4
-- name: Setup Node
-uses: actions/setup-node@v4
-with:
-node-version: "20"
-cache: npm
-cache-dependency-path: frontend/package-lock.json
-- name: Install
-run: npm ci
-- name: Unit tests
-run: npm test
-- name: Build
-run: npm run build
-- name: Upload frontend dist
-uses: actions/upload-artifact@v4
-with:
-name: ticketflow-frontend-dist
-path: frontend/dist
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Maven)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Test
+        run: mvn -B -ntp test
+      - name: Package
+        run: mvn -B -ntp -DskipTests package
+      - name: Upload backend jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: ticketflow-backend-jar
+          path: backend/target/*.jar
+
+  frontend:
+    name: Frontend (Node/Vitest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Upload frontend dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: ticketflow-frontend-dist
+          path: frontend/dist
