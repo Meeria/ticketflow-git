@@ -161,14 +161,15 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          working-directory: frontend
-          # On indique à l'action de NE PAS réinstaller (car on l'a fait avec npm ci)
-          install: false 
-          build: npm run build
-          start: npm run preview -- --host 127.0.0.1 --port 5173
+          # On NE met PAS working-directory ici car la config est à la racine
+          # Mais on précise où se trouve le projet pour le build et le start
+          build: npm run build --prefix frontend
+          start: npm run preview --prefix frontend -- --host 127.0.0.1 --port 5173
           wait-on: 'http://127.0.0.1:8080/actuator/health, http://127.0.0.1:5173'
           wait-on-timeout: 120
           browser: chrome
+          # On force le chemin du fichier de config s'il n'est pas trouvé
+          config-file: cypress.config.js 
         env:
           CYPRESS_BASE_URL: http://127.0.0.1:5173
 
