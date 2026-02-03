@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { addComment, getTicket, listComments, updateTicket } from "../api/tickets";
+import { addComment, getTicket, listComments, updateTicket, deleteTicket } from "../api/tickets";
 import type { CommentDto, TicketDto, TicketPriority, TicketStatus } from "../api/types";
 
 export default function TicketDetailPage() {
@@ -25,6 +25,8 @@ export default function TicketDetailPage() {
     }
   }
 
+
+
   useEffect(() => { if (ticketId) load(); }, [ticketId]);
 
   async function onChangeStatus(s: TicketStatus) {
@@ -38,6 +40,19 @@ export default function TicketDetailPage() {
     const updated = await updateTicket(ticket.id, { priority: p });
     setTicket(updated);
   }
+
+
+    async function deleteTicketFunc(ticketId: number) {
+      setError(null);
+      try {
+        const updated = await deleteTicket(ticketId);
+        await deleteTicket(ticketId);
+      } catch (e: any) {
+        setError(e.message);
+      }
+      window.location.href = "/";
+    }
+
 
   async function onAddComment(e: React.FormEvent) {
     e.preventDefault();
@@ -105,6 +120,8 @@ export default function TicketDetailPage() {
             <button className="primary" type="submit">Ajouter</button>
           </div>
         </form>
+
+        <button id="delete-ticket-button" onClick={() => deleteTicketFunc(ticketId)} style={{ marginTop: 10, color: "crimson" }}>Supprimer le ticket</button>
       </div>
     </div>
   );

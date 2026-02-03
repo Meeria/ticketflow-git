@@ -62,7 +62,7 @@ export default function TicketListPage() {
             <span className="badge">{t.status}</span>
             <span className="badge">{t.priority}</span>
             <div className="spacer" />
-            <Link to={`/tickets/${t.id}`}>Ouvrir</Link>
+            <Link id={`ticket-link-${t.id}`} to={`/tickets/${t.id}`}>Ouvrir</Link>
           </div>
           <p className="small" style={{ marginTop: 6 }}>{t.description}</p>
         </div>

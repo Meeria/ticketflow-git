@@ -47,4 +47,9 @@ public class TicketService {
         if (priority != null) t.setPriority(priority);
         return repo.save(t);
     }
+
+    public void delete(Long id) {
+        Ticket t = get(id);
+        repo.delete(t);
+    }
 }

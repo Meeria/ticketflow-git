@@ -45,6 +45,12 @@ public class TicketController {
         return toDto(service.get(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public TicketDto update(@PathVariable Long id, @Valid @RequestBody UpdateTicketRequest req) {
         Ticket t = service.update(id, req.title(), req.description(), req.status(), req.priority());

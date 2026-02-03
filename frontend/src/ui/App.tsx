@@ -21,7 +21,7 @@ export default function App() {
         <div className="spacer" />
         <nav className="row">
           <Link to="/">Tickets</Link>
-          <Link to="/tickets/new">Nouveau</Link>
+          <Link id="new-ticket-link" to="/tickets/new">Nouveau</Link>
           {isLoggedIn() ? (
             <button onClick={onLogout}>Logout</button>
           ) : (

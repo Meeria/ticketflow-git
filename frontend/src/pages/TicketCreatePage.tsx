@@ -26,7 +26,7 @@ export default function TicketCreatePage() {
       <h3>Nouveau ticket</h3>
       <form onSubmit={onSubmit}>
         <div className="row">
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre" />
+          <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre" />
           <select value={priority} onChange={(e) => setPriority(e.target.value as TicketPriority)}>
             <option value="P1">P1</option>
             <option value="P2">P2</option>
@@ -34,7 +34,7 @@ export default function TicketCreatePage() {
           </select>
         </div>
         <div style={{ marginTop: 10 }}>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
+          <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
         </div>
         <div className="row" style={{ marginTop: 10 }}>
           <button className="primary" type="submit">Créer</button>

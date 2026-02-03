@@ -38,6 +38,12 @@ export async function createTicket(payload: {
   });
 }
 
+export async function deleteTicket(id: number): Promise<void> {
+  return http<void>(`/tickets/${id}`, {
+    method: "DELETE"
+  });
+}
+
 export async function updateTicket(id: number, payload: Partial<{
   title: string;
   description: string;
