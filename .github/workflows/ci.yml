@@ -125,3 +125,45 @@ jobs:
         with:
           name: playwright-report.txt
           path: frontend/playwright-report
+
+  e2e-cypress:
+    name: E2E (Cypress)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Start Backend (Background)
+        working-directory: backend
+        run: |
+          nohup mvn -B -ntp spring-boot:run -Dspring-boot.run.profiles=test > /tmp/backend.log 2>&1 &
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          build: npm run build
+          start: npm run preview -- --host 127.0.0.1 --port 5173
+          # On attend que le back et le front soient prêts avant de lancer Cypress
+          wait-on: 'http://127.0.0.1:8080/actuator/health, http://127.0.0.1:5173'
+          wait-on-timeout: 120
+          browser: chrome
+        env:
+          CYPRESS_BASE_URL: http://127.0.0.1:5173
+
+      - name: Upload Cypress artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-videos
+          path: |
+            frontend/cypress/screenshots
+            frontend/cypress/videos
