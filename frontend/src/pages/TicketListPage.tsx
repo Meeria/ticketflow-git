@@ -65,6 +65,7 @@ export default function TicketListPage() {
             <Link id={`ticket-link-${t.id}`} to={`/tickets/${t.id}`}>Ouvrir</Link>
           </div>
           <p className="small" style={{ marginTop: 6 }}>{t.description}</p>
+          <p>test</p>
         </div>
       ))}
     </div>
