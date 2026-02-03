@@ -134,19 +134,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
-          cache: maven
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: frontend
@@ -160,27 +147,15 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          # On se place dans frontend pour que l'action trouve le package-lock.json
           working-directory: frontend
           install: false
-          
-          # On utilise --prefix pour builder et lancer le serveur dans le bon dossier
           build: npm run build
           start: npm run preview -- --host 127.0.0.1 --port 5173
           wait-on: 'http://127.0.0.1:8080/actuator/health, http://127.0.0.1:5173'
           
-          # CRUCIAL : On dit à Cypress que son dossier de projet est un niveau au-dessus (la racine)
+
           project: ..
-          
           browser: chrome
         env:
           CYPRESS_BASE_URL: http://127.0.0.1:5173
-
-      - name: Upload Cypress artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-screenshots-videos
-          path: |
-            cypress/screenshots
-            cypress/videos
+          NODE_PATH: ${{ github.workspace }}/frontend/node_modules
