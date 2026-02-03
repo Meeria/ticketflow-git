@@ -148,12 +148,11 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      # Étape cruciale : On installe les dépendances manuellement avant l'action Cypress
       - name: Install dependencies
         working-directory: frontend
         run: npm ci
 
-      - name: Start Backend (Background)
+      - name: Start Backend
         working-directory: backend
         run: |
           nohup mvn -B -ntp spring-boot:run -Dspring-boot.run.profiles=test > /tmp/backend.log 2>&1 &
@@ -161,15 +160,18 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          # On NE met PAS working-directory ici car la config est à la racine
-          # Mais on précise où se trouve le projet pour le build et le start
-          build: npm run build --prefix frontend
-          start: npm run preview --prefix frontend -- --host 127.0.0.1 --port 5173
+          # On se place dans frontend pour que l'action trouve le package-lock.json
+          working-directory: frontend
+          install: false
+          
+          # On utilise --prefix pour builder et lancer le serveur dans le bon dossier
+          build: npm run build
+          start: npm run preview -- --host 127.0.0.1 --port 5173
           wait-on: 'http://127.0.0.1:8080/actuator/health, http://127.0.0.1:5173'
-          wait-on-timeout: 120
-          config-file: ../cypress.config.js
-          config: "supportFile=../cypress/support/e2e.js,fixturesFolder=../cypress/fixtures"
-          spec: ../cypress/e2e/**/*.cy.js
+          
+          # CRUCIAL : On dit à Cypress que son dossier de projet est un niveau au-dessus (la racine)
+          project: ..
+          
           browser: chrome
         env:
           CYPRESS_BASE_URL: http://127.0.0.1:5173
@@ -180,5 +182,5 @@ jobs:
         with:
           name: cypress-screenshots-videos
           path: |
-            frontend/cypress/screenshots
-            frontend/cypress/videos
+            cypress/screenshots
+            cypress/videos
