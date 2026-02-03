@@ -171,8 +171,6 @@ jobs:
           config: "supportFile=../cypress/support/e2e.js,fixturesFolder=../cypress/fixtures"
           spec: ../cypress/e2e/**/*.cy.js
           browser: chrome
-          # On force le chemin du fichier de config s'il n'est pas trouvé
-          config-file: cypress.config.js 
         env:
           CYPRESS_BASE_URL: http://127.0.0.1:5173
 
